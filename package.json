@@ -1,0 +1,5 @@
+{
+  "name": "crackle",
+  "description": "A Pure Javascript CSS Selector Engine.",
+  "main": "./dist/crackle.js"
+}
