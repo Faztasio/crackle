@@ -47,3 +47,6 @@ methods.prototype = {
     return methods.all(object)
   }
 }
+if (module.exports) {
+        module.exports = crackle;
+      }
