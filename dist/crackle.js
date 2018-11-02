@@ -1,62 +1,48 @@
-var crackle = function (selector) {
-
-    var i, len, curr_col, element, par, ret_arr = [], fns;
-
-    if (selector.indexOf('#') > 0) {
-        selector = selector.split('#');
-        selector = '#' + selector[selector.length -1];
-    }
-    selector = selector.split(' ');
-
-    fns = {
-        // @param `sel` string : the id of an element
-        id : function (sel) {
-            return document.getElementById(sel);
-        },
-        // @param `c_or_e` string : defines whether we're getting by class or element name; is either 'class' or 'elements'
-        // @param `sel` string : a class name
-        // @param `par` Node or NodeList (optional) : the parent element(s) for the selector; defaults to `document`
-        get : function (c_or_e, sel, par) {
-            var i = 0, len, arr = [], get_what = (c_or_e === 'class') ? 'getElementsByClassName' : 'getElementsByTagName';
-            if (par.length) {
-               while (par[i]) { Array.prototype.push.apply(arr, Array.prototype.slice.call(par[i++][get_what](sel))); }
-            } else {
-                arr = par[get_what](sel);
-            }
-            return (arr.length === 1) ? arr[0] : arr;
+var crackle = function(tag) {
+  var object = NULL
+  if (tag[0] == "#") {
+    object = document.getElementById(tag.drop(1))
+    methods.type = "id"
+    return methods.all(object)
+  } else if (tag[0] == ".") {
+    object = document.getElementsByClassName()
+    methods.type = "class"
+    return methods.all(object)
+  } else  {
+    object = document.getElementsByTag(tag)
+    methods.type = "tag"
+    return methods.all(object)
+  }
+}
+var methods = function() {}
+methods.prototype = {
+  all: function(object) {
+    l = {}
+    if (this.type == "class" || this.type == "tag") {
+      Object.keys(object[0].style).forEach(function(key) {
+        l[key] = function(val) {
+          object.forEach(function(obj) {
+            obj.style[key] = val;
+          }
         }
-    };
-        
-
-    len = selector.length;
-    curr_col = document;
-
-    for ( i = 0; i < len; i++ ) {
-        element = selector[i];
-        par = curr_col; 
-         if (element.indexOf('#') === 0) {
-             curr_col = fns.id(element.split('#')[1]);
-        } else if (element.indexOf('.') > -1) {
-            element = element.split('.');
-            if (element[0]) { // if there's an element prefixed on the class name
-                par = fns.get('elements', element[0], par);
-                if (par.length) {
-                    for (i = 0; par[i]; i++) {
-                        if(par[i].className.indexOf(element[1]) > -1) {
-                            ret_arr.push(par[i]);
-                        }
-                    }
-                     curr_col = ret_arr;
-                } else {
-                     curr_col = (par.className.indexOf(element[1]) > -1) ? par : [];
-                }
-            } else {
-                 curr_col = fns.get('class', element[1], par);
-            }
-        } else { // regular element selector
-             curr_col = fns.get('elements', element, par);
-        }  
+      })
+    } else if (this.type == "id") {
+      Object.keys(object.style).forEach(function(key) {
+        l[key] = function(val) {
+          object.style[key] = val;
+        }
+      }
     }
-
-    return curr_col;
-};
+                                        // Custom Methods
+    l.text = function(text) {
+      if (type == "class" || type == "tag") {
+        Object.keys(object).forEach(function(elem) {
+          elem.innerHTML = text
+        }
+      } else if (type == "id") {
+          object.innerHTML = text
+      }
+    }
+    return l
+  }
+}
