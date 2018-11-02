@@ -3,10 +3,11 @@ var crackle = function(tag) {
   var methods = function() {}
 methods.prototype = {
   all: function(object) {
-    l = {}
+    l = function() { return object }
+    l.prototype = {}
     if (this.type == "class" || this.type == "tag") {
       Object.keys(object[0].style).forEach(function(key) {
-        l[key] = function(val) {
+        l.prototype[key] = function(val) {
           object.forEach(function(obj) {
             obj.style[key] = val;
           }
@@ -14,13 +15,13 @@ methods.prototype = {
       })
     } else if (this.type == "id") {
       Object.keys(object.style).forEach(function(key) {
-        l[key] = function(val) {
+        l.prototype[key] = function(val) {
           object.style[key] = val;
         }
       }
     }
                                         // Custom Methods
-    l.text = function(text) {
+    l.prototype.text = function(text) {
       if (type == "class" || type == "tag") {
         Object.keys(object).forEach(function(elem) {
           elem.innerHTML = text
@@ -29,7 +30,7 @@ methods.prototype = {
           object.innerHTML = text
       }
     }
-    return l
+    return l()
   }
 }
   if (tag[0] == "#") {
